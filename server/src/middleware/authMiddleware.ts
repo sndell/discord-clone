@@ -2,6 +2,7 @@ import { Response, NextFunction } from 'express';
 import { AuthenticatedRequest, RequestWithRefreshToken } from 'types';
 import { JwtPayload, TokenExpiredError, verify } from 'jsonwebtoken';
 import RefreshToken from '../models/refreshTokenModel';
+import User from '../models/userModel';
 
 const isAuthenticated = async (
   req: AuthenticatedRequest,
@@ -18,6 +19,10 @@ const isAuthenticated = async (
       token,
       process.env.JWT_SECRET_KEY
     ) as JwtPayload;
+
+    const exists = User.exists({ _id: decodedToken.value });
+    if (!exists)
+      res.status(401).json({ message: 'Unauthorized: invalid token' });
 
     req.userId = decodedToken.value;
     next();

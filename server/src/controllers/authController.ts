@@ -71,10 +71,6 @@ const login = async (req: Request, res: Response) => {
 const logout = async (req: LogoutRequest, res: Response) => {
   try {
     const { refreshToken } = req;
-
-    if (!refreshToken)
-      return res.status(404).json({ message: 'Refresh token not found.' });
-
     // Delete the refresh token from the database
     await RefreshToken.findOneAndDelete({ token: refreshToken });
 

@@ -4,6 +4,7 @@ import "./styles/tailwind.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from "./routes/Root.tsx";
 import Auth from "./routes/Auth.tsx";
+import { LoginForm, RegisterForm } from "./features/auth/index.ts";
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,16 @@ const router = createBrowserRouter([
       {
         path: "auth",
         element: <Auth />,
+        children: [
+          {
+            path: "login",
+            element: <LoginForm />,
+          },
+          {
+            path: "register",
+            element: <RegisterForm />,
+          },
+        ],
       },
     ],
   },

@@ -5,10 +5,10 @@ import crypto from 'crypto';
 import Profile from '../models/profileModel';
 import RefreshToken from '../models/refreshTokenModel';
 import { pick } from 'lodash';
-import { UserAgent } from 'types';
+import { AuthenticatedRequest, UserAgent } from 'types';
 
 // Register a new user
-const register = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response) => {
   try {
     const { email, password, username, displayName, photoUrl } = req.body;
 
@@ -23,15 +23,6 @@ const register = async (req: Request, res: Response) => {
       return res.status(409).json({ message });
     }
 
-    // Create a new profile
-    await Profile.create({
-      username,
-      displayName: displayName || username,
-      photoUrl:
-        photoUrl ||
-        `https://ui-avatars.com/api/?name=${username}&background=random&size=128`,
-    });
-
     // Generate a verification token
     const verificationToken = await crypto.randomBytes(16).toString('hex');
 
@@ -42,33 +33,14 @@ const register = async (req: Request, res: Response) => {
       verificationToken,
     });
 
-    // Generate an access token
-    const token = generateToken(user._id);
-
-    // Generate a refresh token
-    const refreshToken = crypto.randomBytes(32).toString('hex');
-
-    // Get user agent details
-    const userAgent: UserAgent = pick(req.useragent, [
-      'source',
-      'browser',
-      'version',
-      'os',
-      'platform',
-    ]);
-
-    const ipAddress = req.ip;
-
-    const expirationDate = new Date();
-    expirationDate.setMonth(expirationDate.getMonth() + 6);
-
-    // Create a new refresh token
-    await RefreshToken.create({
-      token: refreshToken,
+    // Create a new profile
+    await Profile.create({
       userId: user._id,
-      ipAddress,
-      userAgent,
-      expirationDate,
+      username,
+      displayName: displayName || username,
+      photoUrl:
+        photoUrl ||
+        `https://ui-avatars.com/api/?name=${username}&background=random&size=128`,
     });
 
     res.status(201).json({ message: 'Registration successful.' });
@@ -78,4 +50,16 @@ const register = async (req: Request, res: Response) => {
   }
 };
 
-export default { register };
+const getCurrentUser = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { userId } = req;
+
+    const user = await Profile.findOne({ userId });
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+
+export default { createUser, getCurrentUser };

@@ -1,5 +1,11 @@
+import { Outlet } from "react-router-dom";
+
 const Auth = () => {
-  return <div>Auth</div>;
+  return (
+    <div className="grid h-[100dvh] place-content-center">
+      <Outlet />
+    </div>
+  );
 };
 
 export default Auth;

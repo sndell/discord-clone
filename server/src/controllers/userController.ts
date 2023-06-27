@@ -35,7 +35,7 @@ const createUser = async (req: Request, res: Response) => {
 
     // Create a new profile
     await Profile.create({
-      userId: user._id,
+      user: user._id,
       username,
       displayName: displayName || username,
       photoUrl:
@@ -53,8 +53,7 @@ const createUser = async (req: Request, res: Response) => {
 const getCurrentUser = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { userId } = req;
-
-    const user = await Profile.findOne({ userId });
+    const user = await Profile.findOne({ user: userId });
     res.status(200).json({ user });
   } catch (error) {
     console.error(error);

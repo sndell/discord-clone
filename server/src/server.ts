@@ -4,6 +4,7 @@ import connect from './util/db';
 import cookieParser from 'cookie-parser';
 import { authRoutes } from './routes/authRoutes';
 import { userRoutes } from './routes/userRoutes';
+import morgan from 'morgan';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -16,6 +17,7 @@ connect();
 app.use(express.json());
 app.use(useragent.express());
 app.use(cookieParser());
+app.use(morgan('dev'));
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/user', userRoutes);

@@ -52,11 +52,11 @@ const login = async (req: Request, res: Response) => {
     res
       .cookie('token', token, {
         httpOnly: true,
-        sameSite: 'none',
+        sameSite: 'strict',
       })
       .cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        sameSite: 'none',
+        sameSite: 'strict',
         path: '/api/v1/auth',
       })
       .status(201)
@@ -99,7 +99,7 @@ const refreshToken = async (req: RequestWithRefreshToken, res: Response) => {
     res
       .cookie('token', newToken, {
         httpOnly: true,
-        sameSite: 'none',
+        sameSite: 'strict',
       })
       .status(200)
       .json({ message: 'Token refreshed successfully.' });

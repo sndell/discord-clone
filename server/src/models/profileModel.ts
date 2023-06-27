@@ -1,7 +1,7 @@
 import { Schema, model, Document, Types, ObjectId } from 'mongoose';
 
 interface Profile extends Document {
-  userId: ObjectId;
+  user: ObjectId;
   username: string;
   displayName: string;
   photoUrl: string;
@@ -11,7 +11,7 @@ interface Profile extends Document {
 
 const profileSchema = new Schema<Profile>(
   {
-    userId: {
+    user: {
       type: Types.ObjectId,
       ref: 'User',
       required: true,
